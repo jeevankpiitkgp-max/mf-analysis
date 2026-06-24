@@ -78,3 +78,33 @@ if __name__ == "__main__":
     print(f"\nSample AMFI codes: {sorted(fund_master['amfi_code'].unique())[:10]}")
     print(f"Min code: {fund_master['amfi_code'].min()}, Max code: {fund_master['amfi_code'].max()}")
     print(f"All codes unique? {fund_master['amfi_code'].is_unique}")
+    #  Validate AMFI codes between fund_master and nav_history
+    print(f"\n\n{'='*60}")
+    print("STEP 7: AMFI CODE VALIDATION")
+    print(f"{'='*60}")
+
+    nav_history = dataframes["02_nav_history"]
+
+    master_codes = set(fund_master['amfi_code'].unique())
+    nav_codes = set(nav_history['amfi_code'].unique())
+
+    missing_in_nav = master_codes - nav_codes
+    extra_in_nav = nav_codes - master_codes
+    matched = master_codes & nav_codes
+
+    print(f"\nTotal codes in fund_master: {len(master_codes)}")
+    print(f"Total unique codes in nav_history: {len(nav_codes)}")
+    print(f"Matched codes (in both): {len(matched)}")
+    print(f"Codes in fund_master but MISSING from nav_history: {len(missing_in_nav)}")
+    if missing_in_nav:
+        print(f"  → {sorted(missing_in_nav)}")
+    print(f"Codes in nav_history but NOT in fund_master: {len(extra_in_nav)}")
+    if extra_in_nav:
+        print(f"  → {sorted(extra_in_nav)}")
+
+    match_pct = (len(matched) / len(master_codes)) * 100
+    print(f"\nMatch rate: {match_pct:.1f}% of fund_master codes have NAV history")
+
+    # records per scheme - sanity check
+    records_per_code = nav_history.groupby('amfi_code').size()
+    print(f"\nNAV records per scheme — min: {records_per_code.min()}, max: {records_per_code.max()}, avg: {records_per_code.mean():.0f}")
