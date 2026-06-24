@@ -50,3 +50,31 @@ if __name__ == "__main__":
     print(f"{'='*60}")
     for name, df in dataframes.items():
         print(f"  - {name}: {df.shape[0]} rows × {df.shape[1]} columns")
+    
+    # Step 6: Explore fund master
+    print(f"\n\n{'='*60}")
+    print("FUND MASTER EXPLORATION")
+    print(f"{'='*60}")
+
+    fund_master = dataframes["01_fund_master"]
+
+    print(f"\nUnique fund houses ({fund_master['fund_house'].nunique()}):")
+    print(fund_master['fund_house'].unique())
+
+    print(f"\nUnique categories ({fund_master['category'].nunique()}):")
+    print(fund_master['category'].unique())
+
+    print(f"\nUnique sub-categories ({fund_master['sub_category'].nunique()}):")
+    print(fund_master['sub_category'].unique())
+
+    print(f"\nUnique risk categories ({fund_master['risk_category'].nunique()}):")
+    print(fund_master['risk_category'].unique())
+
+    print(f"\nUnique SEBI category codes ({fund_master['sebi_category_code'].nunique()}):")
+    print(fund_master['sebi_category_code'].unique())
+
+    print(f"\nAMFI code structure:")
+    print(fund_master['amfi_code'].describe())
+    print(f"\nSample AMFI codes: {sorted(fund_master['amfi_code'].unique())[:10]}")
+    print(f"Min code: {fund_master['amfi_code'].min()}, Max code: {fund_master['amfi_code'].max()}")
+    print(f"All codes unique? {fund_master['amfi_code'].is_unique}")
