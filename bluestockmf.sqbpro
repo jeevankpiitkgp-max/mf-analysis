@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="bluestockmf.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2440"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="dim_date" custom_title="0" dock_id="1" table="4,8:maindim_date"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000011300ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1*">PRAGMA table_info(fact_transactions);
+-- 1. Top 5 funds by AUM
+SELECT amfi_code, aum_crore
+FROM fact_performance
+ORDER BY aum_crore DESC
+LIMIT 5;
+
+-- 2. Average NAV per month
+SELECT dd.year, dd.month, ROUND(AVG(fn.nav), 2) AS avg_nav
+FROM fact_nav fn
+JOIN dim_date dd ON fn.date_id = dd.date_id
+GROUP BY dd.year, dd.month
+ORDER BY dd.year, dd.month;
+
+-- 3. SIP inflow YoY growth
+SELECT transaction_type, dd.year,
+ROUND(SUM(amount_inr), 2) AS total_inflow
+FROM fact_transactions ft
+JOIN dim_date dd ON ft.date_id = dd.date_id
+WHERE transaction_type = 'SIP'
+GROUP BY dd.year
+ORDER BY dd.year;
+
+-- 4. Transactions by state
+SELECT state, COUNT(*) AS num_transactions,
+ROUND(SUM(amount_inr), 2) AS total_amount
+FROM fact_transactions
+GROUP BY state
+ORDER BY total_amount DESC;
+
+-- 5. Funds with expense_ratio &lt; 1%
+SELECT amfi_code, expense_ratio_pct
+FROM fact_performance
+WHERE expense_ratio_pct &lt; 1
+ORDER BY expense_ratio_pct ASC;
+
+-- 6. Top 5 funds by Sharpe ratio
+SELECT amfi_code, sharpe_ratio
+FROM fact_performance
+ORDER BY sharpe_ratio DESC
+LIMIT 5;
+
+-- 7. Funds with negative alpha (underperforming benchmark)
+SELECT amfi_code, alpha, return_3yr_pct, benchmark_3yr_pct
+FROM fact_performance
+WHERE alpha &lt; 0
+ORDER BY alpha ASC;
+
+-- 8. Transaction breakdown by KYC status
+SELECT kyc_status,
+COUNT(*) AS num_transactions,
+ROUND(SUM(amount_inr), 2) AS total_amount
+FROM fact_transactions
+GROUP BY kyc_status
+ORDER BY total_amount DESC;
+
+-- 9. Top 5 states by SIP investment
+SELECT state, ROUND(SUM(amount_inr), 2) AS total_sip
+FROM fact_transactions
+WHERE transaction_type = 'SIP'
+GROUP BY state
+ORDER BY total_sip DESC
+LIMIT 5;
+
+-- 10. Funds with highest max drawdown risk
+SELECT amfi_code, max_drawdown_pct, sharpe_ratio, return_3yr_pct
+FROM fact_performance
+ORDER BY max_drawdown_pct ASC
+LIMIT 5;
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
