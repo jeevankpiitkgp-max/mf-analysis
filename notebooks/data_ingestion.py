@@ -1,7 +1,8 @@
 import pandas as pd
 from pathlib import Path
 
-RAW_DIR = Path(__file__).parent / "data" / "raw"
+BASE_DIR = Path(r"D:\code\mf-analysis")
+RAW_DIR = BASE_DIR / "data" / "raw"
 
 def load_and_inspect(filepath):
     df = pd.read_csv(filepath)

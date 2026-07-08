@@ -1,8 +1,10 @@
 import pandas as pd
 from pathlib import Path
 
-RAW_DIR = Path(__file__).parent / "data" / "raw"
-PROCESSED_DIR = Path(__file__).parent / "data" / "processed"
+BASE_DIR = Path(r"D:\code\mf-analysis")
+
+RAW_DIR = BASE_DIR / "data" / "raw"
+PROCESSED_DIR = BASE_DIR / "data" / "processed"
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
 

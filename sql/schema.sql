@@ -64,3 +64,25 @@ CREATE TABLE IF NOT EXISTS fact_aum (
     aum_crore REAL,
     FOREIGN KEY (date_id) REFERENCES dim_date(date_id)
 );
+
+CREATE TABLE IF NOT EXISTS fact_portfolio (
+    portfolio_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    amfi_code TEXT,
+    stock_symbol TEXT,
+    weight_pct REAL,
+    sector TEXT,
+    date_id INTEGER,
+    FOREIGN KEY (amfi_code) REFERENCES dim_fund(amfi_code),
+    FOREIGN KEY (date_id) REFERENCES dim_date(date_id)
+);
+
+CREATE TABLE IF NOT EXISTS fact_sip_industry (
+    sip_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date_id INTEGER,
+    sip_inflow_crore REAL,
+    active_sip_accounts_crore REAL,
+    new_sip_accounts_lakh REAL,
+    sip_aum_lakh_crore REAL,
+    yoy_growth_pct REAL,
+    FOREIGN KEY (date_id) REFERENCES dim_date(date_id)
+);

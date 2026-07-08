@@ -6,3 +6,7 @@ venv/
 .env
 data/raw/*.csv
 data/processed/*.csv
+
+*.db
+*.sqbpro
+logs/
